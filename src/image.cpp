@@ -14,6 +14,10 @@ PixelColor Image::get_pixel(int row, int column) const {
   return m_data[row * width + column];
 }
 
-void Image::set_pixel(int row, int column, PixelColor &value) {
+void Image::set_pixel(int row, int column, const PixelColor &value) {
   m_data[row * width + column] = value;
+}
+
+Image::~Image() {
+  delete[] m_data;
 }

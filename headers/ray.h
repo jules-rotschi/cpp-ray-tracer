@@ -11,9 +11,11 @@ private:
 
 public:
   Ray() = delete;
-  Ray(Point3 const &origin, Vector3 const &direction);
-  Ray(Point3 const &origin, Point3 const &direction);
+  Ray(const Point3 &origin, const Vector3 &direction);
+  Ray(const Point3 &origin, const Point3 &direction);
 
+  Point3 get_origin() const;
+  Vector3 get_direction() const;
   Point3 at(double t) const;
 };
 

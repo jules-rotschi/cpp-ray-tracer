@@ -7,7 +7,7 @@
 
 class PpmEncoder {
 public:
-  void encode(std::shared_ptr<Image> const image, std::ofstream &file) const;
+  void encode(const Image &image, std::ofstream &file) const;
 };
 
 #endif

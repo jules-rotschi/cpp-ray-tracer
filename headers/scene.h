@@ -3,13 +3,12 @@
 
 #include <vector>
 
-class Sphere;
-class Camera;
+#include "sphere.h"
 
 class Scene {
 public:
   std::vector<Sphere> spheres;
-  void add(Sphere const &sphere);
+  void add(const Sphere &sphere);
 };
 
 #endif

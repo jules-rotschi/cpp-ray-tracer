@@ -27,7 +27,9 @@ public:
   Image(int width, int height);
 
   PixelColor get_pixel(int row, int column) const;
-  void set_pixel(int row, int column, PixelColor &value);
+  void set_pixel(int row, int column, const PixelColor &value);
+
+  ~Image();
 };
 
 #endif
