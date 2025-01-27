@@ -14,10 +14,13 @@ int main(int argc, char *argv[]) {
   
   Scene scene;
 
-  Sphere sphere(Point3(0, 0, -3), 1);
-  scene.add(sphere);
+  Sphere sphere(Point3(1, 0, -5), 1);
+  scene.add(std::make_shared<Sphere>(sphere));
 
-  int image_width = 256;
+  Light light(Point3(-3, 1, -4));
+  scene.add(std::make_shared<Light>(light));
+
+  int image_width = 1920;
   double aspect_ratio = 16.0/9.0;
   double viewport_height = 0.024;
   double focal_length = 0.05;

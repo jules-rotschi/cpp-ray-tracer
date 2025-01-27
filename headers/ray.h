@@ -14,8 +14,8 @@ public:
   Ray(const Point3 &origin, const Vector3 &direction);
   Ray(const Point3 &origin, const Point3 &direction);
 
-  Point3 get_origin() const;
-  Vector3 get_direction() const;
+  const Point3 &get_origin() const;
+  const Vector3 &get_direction() const;
   Point3 at(double t) const;
 };
 

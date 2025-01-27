@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <limits>
+#include <optional>
 
 #include "renderer.h"
 #include "image.h"
@@ -17,22 +18,35 @@ int digitalize(double value) {
 PixelColor Renderer::compute_pixel(Camera const &camera, int row, int column) const {
   Ray ray(camera.position, camera.get_pixel_position(row, column));
 
-  double closest_sphere_distance = std::numeric_limits<double>::infinity();
-  const Sphere *closest_sphere = nullptr;
+  double ray_tmin = 0;
+  double ray_tmax = 1000;
 
-  for (const Sphere &sphere : m_scene->spheres) {
-    if (sphere.get_closest_intersection(ray).z < closest_sphere_distance) {
-      closest_sphere = &sphere;
-      closest_sphere_distance = sphere.get_origin().get_distance_from(camera.position);
+  bool hit = false;
+  HitRecord hit_record;
+  double closest = ray_tmax;
+
+  for (std::shared_ptr<Object> object : m_scene->objects) {
+    if (object->hit(ray, ray_tmin, closest, hit_record)) {
+      hit = true;
+      closest = hit_record.t;
     }
   }
 
-  double red, green, blue;
+  double red = 0;
+  double green = 0;
+  double blue = 0;
 
-  if (closest_sphere) {
-    red = 1;
-    green = 1;
-    blue = 1;
+  if (hit) {
+    Vector3 unit_ray_direction = ray.get_direction().normalize();
+    for (std::shared_ptr<Light> light : m_scene->lights) {
+      Vector3 light_direction = Vector3(hit_record.point, light->position).normalize();
+      red = -dot(hit_record.normal, light_direction);
+      green = -dot(hit_record.normal, light_direction);
+      blue = -dot(hit_record.normal, light_direction);
+      red = red < 0 ? 0 : red;
+      green = red < 0 ? 0 : green;
+      blue = red < 0 ? 0 : blue;
+    }
   } else {
     red = 0;
     green = 0;

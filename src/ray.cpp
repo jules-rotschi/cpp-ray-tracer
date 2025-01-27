@@ -7,11 +7,11 @@ Ray::Ray(Point3 const &origin, Vector3 const &direction)
 Ray::Ray(Point3 const &origin, Point3 const &direction)
   : m_origin(origin), m_direction(Vector3(origin, direction)) {}
 
-Point3 Ray::get_origin() const {
+const Point3 &Ray::get_origin() const {
   return m_origin;
 }
 
-Vector3 Ray::get_direction() const {
+const Vector3 &Ray::get_direction() const {
   return m_direction;
 }
 
