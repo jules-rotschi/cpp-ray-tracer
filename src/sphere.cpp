@@ -7,14 +7,14 @@
 #include "point3.h"
 #include "ray.h"
 
-Sphere::Sphere(const Point3 &position, double radius)
-  : m_center(position), m_radius(radius) {}
+Sphere::Sphere(const Point3& position, double radius, const Color& color)
+  : m_center(position), m_radius(radius), Object(color) {}
 
-const Point3 &Sphere::get_origin() const {
+const Point3& Sphere::get_origin() const {
   return m_center;
 }
 
-bool Sphere::hit(const Ray &ray, double ray_tmin, double ray_tmax, HitRecord& hit_record) const {
+bool Sphere::hit(const Ray& ray, Interval t_interval, HitRecord& hit_record) const {
   Vector3 ray_direction = ray.get_direction();
   Vector3 sphere_direction(ray.get_origin(), m_center);
   
@@ -29,15 +29,16 @@ bool Sphere::hit(const Ray &ray, double ray_tmin, double ray_tmax, HitRecord& hi
   double discriminant_sqrt = std::sqrt(discriminant);
   
   double t = (-b - discriminant_sqrt) / (2 * a);
-  if (t < ray_tmin || t > ray_tmax) {
+  if (!t_interval.contains(t)) {
     t = (-b + discriminant_sqrt) / (2 * a);
-    if (t < ray_tmin || t > ray_tmax) return false;
+    if (!t_interval.contains(t)) return false;
   }
   
   hit_record.t = t;
   hit_record.point = ray.at(t);
   Vector3 outward_normal = Vector3(m_center, hit_record.point) / m_radius;
   hit_record.set_face_normal(ray, outward_normal);
+  hit_record.albedo = this->albedo;
 
   return true;
 }

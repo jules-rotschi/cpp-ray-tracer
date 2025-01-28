@@ -3,10 +3,10 @@
 
 #include <optional>
 
+class Ray;
+
 #include "point3.h"
 #include "object.h"
-
-class Ray;
 
 class Sphere : public Object {
 private:
@@ -15,12 +15,11 @@ private:
 
 public:
   Sphere() = delete;
-  Sphere(const Point3 &position, double radius);
-  const Point3 &get_origin() const;
+  Sphere(const Point3& position, double radius, const Color& color);
+  const Point3& get_origin() const;
   bool hit(
-    const Ray &ray,
-    double ray_tmin,
-    double ray_tmax,
+    const Ray& ray,
+    Interval t_interval,
     HitRecord& hit_record
   ) const override;
 };

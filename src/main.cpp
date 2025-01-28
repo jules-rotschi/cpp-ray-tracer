@@ -9,32 +9,39 @@
 #include "ppm-encoder.h"
 #include "camera.h"
 #include "ray.h"
+#include "light.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   
   Scene scene;
 
-  Sphere sphere(Point3(1, 0, -5), 1);
+  const Sphere sphere(Point3(0, 0, -5), 1, Color(1, 1, 1));
   scene.add(std::make_shared<Sphere>(sphere));
 
-  Light light(Point3(-3, 1, -4));
+  const Light light(Point3(-6, 1, -1), Color(1000, 2000, 4000));
   scene.add(std::make_shared<Light>(light));
 
-  int image_width = 1920;
-  double aspect_ratio = 16.0/9.0;
-  double viewport_height = 0.024;
-  double focal_length = 0.05;
-  Point3 camera_position = { 0, 0, 0 };
+  const Light back_light(Point3(6, 1, -8), Color(4000, 2000, 1000));
+  scene.add(std::make_shared<Light>(back_light));
 
-  Sensor sensor(image_width, aspect_ratio, viewport_height);
-  Lens lens = { focal_length };
+  const int image_width = 1920;
+  const double aspect_ratio = 16.0/9.0;
+  const double viewport_height = 0.024;
+  const double focal_length = 0.05;
+  const double aperture = 2.8;
+  const double shutter_speed = 1.0/50;
+  const int sensivity = 800;
+  const Point3 camera_position = { 0, 0, 0 };
 
-  Camera camera(sensor, lens, camera_position);
+  const Sensor sensor(image_width, aspect_ratio, viewport_height, sensivity);
+  const Lens lens = { focal_length, aperture };
 
-  Renderer renderer(scene);
-  std::unique_ptr<Image> rendered_image = renderer.render(camera);
+  const Camera camera(camera_position, sensor, lens, shutter_speed);
 
-  PpmEncoder encoder;
+  const Renderer renderer(scene);
+  const std::unique_ptr<Image> rendered_image = renderer.render(camera);
+
+  const PpmEncoder encoder;
   std::ofstream output_file("image.ppm");
   encoder.encode(*rendered_image, output_file);
   

@@ -1,17 +1,17 @@
 #include "ray.h"
 #include "vector3.h"
 
-Ray::Ray(Point3 const &origin, Vector3 const &direction)
+Ray::Ray(Point3 const& origin, Vector3 const& direction)
   : m_origin(origin), m_direction(direction) {}
 
-Ray::Ray(Point3 const &origin, Point3 const &direction)
+Ray::Ray(Point3 const& origin, Point3 const& direction)
   : m_origin(origin), m_direction(Vector3(origin, direction)) {}
 
-const Point3 &Ray::get_origin() const {
+const Point3& Ray::get_origin() const {
   return m_origin;
 }
 
-const Vector3 &Ray::get_direction() const {
+const Vector3& Ray::get_direction() const {
   return m_direction;
 }
 

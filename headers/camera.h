@@ -10,35 +10,36 @@ struct ImageDefinition {
   ImageDefinition(int width, double aspect_ratio);
 };
 
-struct Viewport {
-  double width, height;
-};
+class Sensor {
+private:
+  struct SensorDimensions { double width, height; };
 
-struct Sensor {
+public:
+  SensorDimensions dimensions;
   ImageDefinition definition;
-  Viewport viewport;
-  // int sensivity;
+  int sensivity;
 
   Sensor() = delete;
-  Sensor(int image_width, double image_aspect_ratio, double viewport_height);
+  Sensor(int image_width, double image_aspect_ratio, double height, int sensivity);
   double get_pixel_dimension() const;
 };
 
 struct Lens {
-  // const double min_focal_length, max_focal_length;
-  double focal_length/*, aperture*/;
+  double focal_length, aperture;
 };
 
 class Camera {
 public:
+  Point3 position;
   Sensor sensor;
   Lens lens;
-  Point3 position;
+  double shutter_speed;
   
   Camera() = delete;
-  Camera(const Sensor &sensor, const Lens &lens, const Point3 &position);
+  Camera(const Point3& position, const Sensor& sensor, const Lens& lens, double shutter_speed);
   double get_aspect_ratio() const;
   Point3 get_pixel_position(int row, int column) const;
+  double get_exposure() const;
 };
 
 #endif

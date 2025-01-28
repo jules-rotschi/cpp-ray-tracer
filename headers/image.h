@@ -4,19 +4,17 @@
 #include <iostream>
 #include <array>
 
-#include "constants.h"
-
 struct PixelColor {
   int red;
   int green;
   int blue;
 };
 
-std::ostream &operator<<(std::ostream &output, PixelColor pixel);
+std::ostream& operator<<(std::ostream& output, PixelColor pixel);
 
 class Image {
 private:
-  PixelColor *m_data;
+  PixelColor* m_data;
 
 public:
   int width;
@@ -25,11 +23,11 @@ public:
 
   Image() = delete;
   Image(int width, int height);
+  ~Image();
 
   PixelColor get_pixel(int row, int column) const;
-  void set_pixel(int row, int column, const PixelColor &value);
+  void set_pixel(int row, int column, const PixelColor& value);
 
-  ~Image();
 };
 
 #endif

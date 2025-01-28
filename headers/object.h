@@ -1,26 +1,32 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+class Ray;
+
 #include "vector3.h"
 #include "point3.h"
-#include "ray.h"
+#include "interval.h"
+#include "color.h"
 
 class HitRecord {
 public:
   double t;
   Point3 point;
-  Vector3 normal;
+  Vector3 unit_normal;
   bool front_face;
+  Color albedo;
 
-  void set_face_normal(const Ray &ray, const Vector3 outward_normal);
+  HitRecord();
+  void set_face_normal(const Ray& ray, const Vector3& outward_normal);
 };
 
 class Object {
 public:
+  Color albedo;
+  Object(const Color& color);
   virtual bool hit(
-    const Ray &ray,
-    double ray_tmin,
-    double ray_tmax,
+    const Ray& ray,
+    Interval t_interval,
     HitRecord& hit_record
   ) const = 0;
 };

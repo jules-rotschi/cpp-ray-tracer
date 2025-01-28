@@ -6,30 +6,34 @@ ImageDefinition::ImageDefinition(int width, double aspect_ratio)
     this->aspect_ratio = double(width) / height;
 }
 
-Sensor::Sensor(int image_width, double image_aspect_ratio, double viewport_height)
-  : definition(image_width, image_aspect_ratio) {
-    viewport = { viewport_height * definition.aspect_ratio, viewport_height };
+Sensor::Sensor(int image_width, double image_aspect_ratio, double height, int sensivity)
+  : definition(image_width, image_aspect_ratio), sensivity(sensivity) {
+    dimensions = { height * definition.aspect_ratio, height };
   }
 
 double Sensor::get_pixel_dimension() const {
-  return viewport.width / definition.width;
+  return dimensions.width / definition.width;
 }
 
-Camera::Camera(const Sensor &sensor, const Lens &lens, const Point3 &position)
-  : sensor(sensor), lens(lens), position(position) {}
+Camera::Camera(const Point3& position, const Sensor& sensor, const Lens& lens, double shutter_speed)
+  : position(position), sensor(sensor), lens(lens), shutter_speed(shutter_speed) {}
 
 double Camera::get_aspect_ratio() const {
   return sensor.definition.aspect_ratio;
 }
 
 Point3 Camera::get_pixel_position(int row, int column) const {
-  double viewport_begin_x = position.x - sensor.viewport.width / 2;
+  double viewport_begin_x = position.x - sensor.dimensions.width / 2;
   double pixel_begin_x = viewport_begin_x + column * sensor.get_pixel_dimension();
   double pixel_center_x = pixel_begin_x + sensor.get_pixel_dimension() / 2;
 
-  double viewport_begin_y = position.y + sensor.viewport.height / 2;
+  double viewport_begin_y = position.y + sensor.dimensions.height / 2;
   double pixel_begin_y = viewport_begin_y - row * sensor.get_pixel_dimension();
   double pixel_center_y = pixel_begin_y - sensor.get_pixel_dimension() / 2;
 
   return Point3(pixel_center_x, pixel_center_y, position.z - lens.focal_length);
+}
+
+double Camera::get_exposure() const {
+  return sensor.sensivity * shutter_speed / (270 * lens.aperture * lens.aperture);
 }

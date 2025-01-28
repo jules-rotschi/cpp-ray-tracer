@@ -4,9 +4,8 @@
 
 #include "ppm-encoder.h"
 #include "image.h"
-#include "constants.h"
 
-void PpmEncoder::encode(Image const &image, std::ofstream &file) const {
+void PpmEncoder::encode(const Image& image, std::ofstream& file) const {
   std::cout << "\nEncoding image..." << std::endl;
 
   file << "P3\n" << image.width << " " << image.height << "\n255\n";
