@@ -42,4 +42,6 @@ public:
   double get_exposure() const;
 };
 
+Vector3 random_offset();
+
 #endif

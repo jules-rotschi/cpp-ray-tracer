@@ -1,11 +1,11 @@
 #include "interval.h"
-#include "ray-tracer.h"
+#include "utility.h"
 
 Interval::Interval(double min, double max)
   : min(min), max(max) {}
   
 double Interval::size() const {
-  return max - min;  
+  return max - min;
 }
 
 bool Interval::contains(double x) const {

@@ -14,7 +14,7 @@ const Point3& Sphere::get_origin() const {
   return m_center;
 }
 
-bool Sphere::hit(const Ray& ray, Interval t_interval, HitRecord& hit_record) const {
+bool Sphere::hit(const Ray& ray, Interval t_interval, Hit& hit_payload) const {
   Vector3 ray_direction = ray.get_direction();
   Vector3 sphere_direction(ray.get_origin(), m_center);
   
@@ -34,11 +34,11 @@ bool Sphere::hit(const Ray& ray, Interval t_interval, HitRecord& hit_record) con
     if (!t_interval.contains(t)) return false;
   }
   
-  hit_record.t = t;
-  hit_record.point = ray.at(t);
-  Vector3 outward_normal = Vector3(m_center, hit_record.point) / m_radius;
-  hit_record.set_face_normal(ray, outward_normal);
-  hit_record.albedo = this->albedo;
+  hit_payload.t = t;
+  hit_payload.point = ray.at(t);
+  Vector3 outward_normal = Vector3(m_center, hit_payload.point) / m_radius;
+  hit_payload.set_face_normal(ray, outward_normal);
+  hit_payload.object = this;
 
   return true;
 }

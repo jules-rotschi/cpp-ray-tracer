@@ -4,6 +4,7 @@
 class Color {
 public:
   double red, green, blue;
+  Color();
   Color(double red, double green, double blue);
   Color& normalize_components(double max_value);
   Color& operator+=(const Color& other_color);

@@ -20,7 +20,7 @@ public:
   bool hit(
     const Ray& ray,
     Interval t_interval,
-    HitRecord& hit_record
+    Hit& hit_payload
   ) const override;
 };
 

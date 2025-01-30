@@ -2,6 +2,7 @@
 
 #include "vector3.h"
 #include "point3.h"
+#include "utility.h"
 
 Vector3::Vector3() : x(0), y(0), z(0) {}
 
@@ -19,13 +20,36 @@ double Vector3::get_squared_length() const {
   return x * x + y * y + z * z;
 }
 
-Vector3& Vector3::make_unit() {
-  *this /= get_length();
-  return *this;
+Vector3 Vector3::make_unit() const {
+  return *this / get_length();
+}
+
+Vector3 Vector3::random() {
+  return Vector3(utility::random(), utility::random(), utility::random());
+}
+
+Vector3 Vector3::random(double min, double max) {
+  return Vector3(utility::random(min, max), utility::random(min, max), utility::random(min, max));
 }
 
 double dot(const Vector3& vector1, const Vector3& vector2) {
   return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
+}
+
+Vector3 random_unit_vector() {
+  while (true) {
+    Vector3 random_vector = Vector3::random(-1, 1);
+    if (random_vector.get_squared_length() > 1e-160) {
+      return random_vector.make_unit();
+    }
+  }
+}
+
+Vector3 random_unit_vector_on_hemisphere(const Vector3& hemisphere_direction) {
+  Vector3 unit_vector = random_unit_vector();
+  if (dot(unit_vector, hemisphere_direction) > 0)
+    return unit_vector;
+  return -unit_vector;
 }
 
 Vector3 operator+(Vector3 const& vector1, Vector3 const& vector2) {

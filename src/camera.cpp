@@ -1,4 +1,6 @@
 #include "camera.h"
+#include "vector3.h"
+#include "utility.h"
 
 ImageDefinition::ImageDefinition(int width, double aspect_ratio)
   : width(width), height(width / aspect_ratio) {
@@ -23,6 +25,8 @@ double Camera::get_aspect_ratio() const {
 }
 
 Point3 Camera::get_pixel_position(int row, int column) const {
+  Vector3 offset = random_offset();
+
   double viewport_begin_x = position.x - sensor.dimensions.width / 2;
   double pixel_begin_x = viewport_begin_x + column * sensor.get_pixel_dimension();
   double pixel_center_x = pixel_begin_x + sensor.get_pixel_dimension() / 2;
@@ -31,9 +35,15 @@ Point3 Camera::get_pixel_position(int row, int column) const {
   double pixel_begin_y = viewport_begin_y - row * sensor.get_pixel_dimension();
   double pixel_center_y = pixel_begin_y - sensor.get_pixel_dimension() / 2;
 
-  return Point3(pixel_center_x, pixel_center_y, position.z - lens.focal_length);
+  Point3 pixel_center(pixel_center_x, pixel_center_y, position.z - lens.focal_length);
+
+  return pixel_center + offset * sensor.get_pixel_dimension();
 }
 
 double Camera::get_exposure() const {
   return sensor.sensivity * shutter_speed / (270 * lens.aperture * lens.aperture);
+}
+
+Vector3 random_offset() {
+  return Vector3(0.5 * utility::random(), 0.5 * utility::random(), 0);
 }
