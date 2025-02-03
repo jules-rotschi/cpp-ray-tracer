@@ -12,6 +12,13 @@ Vector3::Vector3(double x, double y, double z)
 Vector3::Vector3(const Point3& origin, const Point3& direction)
   : x(direction.x - origin.x), y(direction.y - origin.y), z(direction.z - origin.z) {}
 
+bool Vector3::is_nearly_null() const {
+  bool x_nearly_null = x * x < 1e-3;
+  bool y_nearly_null = y * y < 1e-3;
+  bool z_nearly_null = z * z < 1e-3;
+  return x_nearly_null && y_nearly_null && z_nearly_null;
+}
+
 double Vector3::get_length() const {
   return std::sqrt(get_squared_length());
 }
@@ -22,6 +29,10 @@ double Vector3::get_squared_length() const {
 
 Vector3 Vector3::make_unit() const {
   return *this / get_length();
+}
+
+Vector3 Vector3::reflect(const Vector3& normal) const {
+  return *this - 2 * dot(*this, normal) * normal;
 }
 
 Vector3 Vector3::random() {
@@ -39,7 +50,7 @@ double dot(const Vector3& vector1, const Vector3& vector2) {
 Vector3 random_unit_vector() {
   while (true) {
     Vector3 random_vector = Vector3::random(-1, 1);
-    if (random_vector.get_squared_length() > 1e-160) {
+    if (random_vector.get_squared_length() < 1 && random_vector.get_squared_length() > 1e-160) {
       return random_vector.make_unit();
     }
   }
@@ -75,4 +86,8 @@ Vector3& operator/=(Vector3& vector, double t) {
 
 Vector3 operator-(Vector3 const& vector) {
   return -1 * vector;
+}
+
+Vector3 operator-(Vector3 const& vector1, const Vector3& vector2) {
+  return Vector3(vector1.x - vector2.x, vector1.y - vector2.y, vector1.z - vector2.z);
 }

@@ -9,7 +9,7 @@ ImageDefinition::ImageDefinition(int width, double aspect_ratio)
 }
 
 Sensor::Sensor(int image_width, double image_aspect_ratio, double height, int sensivity)
-  : definition(image_width, image_aspect_ratio), sensivity(sensivity) {
+  : definition(image_width, image_aspect_ratio), sensivity(sensivity), gamma(0.45) {
     dimensions = { height * definition.aspect_ratio, height };
   }
 

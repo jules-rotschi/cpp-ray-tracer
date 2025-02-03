@@ -12,6 +12,7 @@
 #include "sphere.h"
 #include "utility.h"
 #include "color.h"
+#include "material.h"
 
 Renderer::Renderer(const Scene& scene)
   : m_scene(&scene) {}
@@ -43,9 +44,9 @@ PixelColor Renderer::compute_pixel(const Camera& camera, int row, int column, in
     Hit hit_payload = trace_ray(ray);
     Color luminance;
 
-    if (hit_payload.object) {
-      Color illumination = compute_illumination(hit_payload, depth);
-      luminance += illumination * hit_payload.object->albedo / pi;
+    if (hit_payload.t > 0) {
+      Color illumination = compute_illumination(ray, hit_payload, depth);
+      luminance += illumination * hit_payload.material->albedo / pi;
     } else {
       luminance = m_scene->sky_color;
     }
@@ -64,7 +65,7 @@ Hit Renderer::trace_ray(const Ray& ray) const {
   Hit hit_payload;
   double closest = infinity;
 
-  for (std::shared_ptr<Object> object : m_scene->objects) {
+  for (auto& object : m_scene->objects) {
     if (object->hit(ray, Interval(ray_tmin, closest), hit_payload)) {
       closest = hit_payload.t;
     }
@@ -73,10 +74,10 @@ Hit Renderer::trace_ray(const Ray& ray) const {
   return hit_payload;
 }
 
-Color Renderer::compute_illumination(const Hit& hit, int depth) const {
+Color Renderer::compute_illumination(const Ray& incident_ray, const Hit& hit, int depth) const {
   Color direct_illumination;
 
-  for (std::shared_ptr<Light> light : m_scene->lights) {
+  for (auto& light : m_scene->lights) {
     Vector3 unit_light_direction = Vector3(hit.point, light->position).make_unit();
     double light_distance = hit.point.get_distance_from(light->position);
     
@@ -88,22 +89,30 @@ Color Renderer::compute_illumination(const Hit& hit, int depth) const {
 
   if (depth == 0) return direct_illumination;
 
-  Vector3 reflected_direction = random_unit_vector_on_hemisphere(hit.unit_normal);
-  Ray reflected_ray(hit.point, reflected_direction);
-  Hit next_hit = trace_ray(reflected_ray);
+  Ray scattered_ray;
+  hit.material->scatter(incident_ray, hit, scattered_ray);
+  Hit next_hit = trace_ray(scattered_ray);
 
-  if (!next_hit.object)
-    return direct_illumination + m_scene->sky_color;
+  if (next_hit.t == -1)
+    return direct_illumination + m_scene->sky_color * pi;
   
   return direct_illumination
-    + next_hit.object->albedo
-    * compute_illumination(next_hit, depth - 1);
+    + next_hit.material->albedo
+    * compute_illumination(scattered_ray, next_hit, depth - 1);
 }
 
 Color Renderer::get_pixel(const Camera& camera, const Color& luminance) const {
-  Color value = luminance * pi * camera.get_exposure() / 0.89;
-  value.red = value.red > 1 ? 1 : value.red;
-  return value;
+  Color linear_value = luminance * pi * camera.get_exposure() / 0.89;
+  linear_value.red = linear_value.red > 1 ? 1 : linear_value.red;
+  linear_value.green = linear_value.green > 1 ? 1 : linear_value.green;
+  linear_value.blue = linear_value.blue > 1 ? 1 : linear_value.blue;
+  
+  Color gamma_corrected_value;
+  gamma_corrected_value.red = std::pow(linear_value.red, camera.sensor.gamma);
+  gamma_corrected_value.green = std::pow(linear_value.green, camera.sensor.gamma);
+  gamma_corrected_value.blue = std::pow(linear_value.blue, camera.sensor.gamma);
+  
+  return gamma_corrected_value;
 }
 
 int digitalize(double value) {

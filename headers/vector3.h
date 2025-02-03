@@ -11,9 +11,11 @@ public:
   Vector3(double x, double y, double z);
   Vector3(const Point3& origin, const Point3& direction);
 
+  bool is_nearly_null() const;
   double get_length() const;
   double get_squared_length() const;
   Vector3 make_unit() const;
+  Vector3 reflect(const Vector3& normal) const;
   static Vector3 random();
   static Vector3 random(double min, double max);
 };
@@ -32,5 +34,6 @@ Vector3 operator/(const Vector3& vector, double t);
 Vector3& operator/=(Vector3& vector, double t);
 
 Vector3 operator-(const Vector3& vector);
+Vector3 operator-(const Vector3& vector1, const Vector3& vector2);
 
 #endif

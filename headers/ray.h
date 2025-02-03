@@ -10,7 +10,7 @@ private:
   Vector3 m_direction;
 
 public:
-  Ray() = delete;
+  Ray();
   Ray(const Point3& origin, const Vector3& direction);
   Ray(const Point3& origin, const Point3& direction);
 

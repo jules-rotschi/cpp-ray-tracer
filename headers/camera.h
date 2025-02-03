@@ -18,6 +18,7 @@ public:
   SensorDimensions dimensions;
   ImageDefinition definition;
   int sensivity;
+  double gamma;
 
   Sensor() = delete;
   Sensor(int image_width, double image_aspect_ratio, double height, int sensivity);

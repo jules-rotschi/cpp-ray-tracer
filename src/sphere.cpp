@@ -7,11 +7,15 @@
 #include "point3.h"
 #include "ray.h"
 
-Sphere::Sphere(const Point3& position, double radius, const Color& color)
-  : m_center(position), m_radius(radius), Object(color) {}
+Sphere::Sphere(const Point3& position, double radius, const Material& material)
+  : m_center(position), m_radius(radius), Object(&material) {}
 
 const Point3& Sphere::get_origin() const {
   return m_center;
+}
+
+std::unique_ptr<const Object> Sphere::get_unique_ptr() const {
+  return std::make_unique<const Sphere>(*this);
 }
 
 bool Sphere::hit(const Ray& ray, Interval t_interval, Hit& hit_payload) const {
@@ -38,7 +42,7 @@ bool Sphere::hit(const Ray& ray, Interval t_interval, Hit& hit_payload) const {
   hit_payload.point = ray.at(t);
   Vector3 outward_normal = Vector3(m_center, hit_payload.point) / m_radius;
   hit_payload.set_face_normal(ray, outward_normal);
-  hit_payload.object = this;
+  hit_payload.material = material;
 
   return true;
 }

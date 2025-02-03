@@ -1,6 +1,8 @@
 #include "ray.h"
 #include "vector3.h"
 
+Ray::Ray() : m_origin(0, 0, 0), m_direction(0, 0, 0) {}
+
 Ray::Ray(Point3 const& origin, Vector3 const& direction)
   : m_origin(origin), m_direction(direction) {}
 

@@ -16,7 +16,7 @@ private:
   const Scene* m_scene;
   PixelColor compute_pixel(const Camera& camera, int row, int column, int samples_count, int depth) const;
   Hit trace_ray(const Ray& ray) const;
-  Color compute_illumination(const Hit& hit, int depth) const;
+  Color compute_illumination(const Ray& incident_ray, const Hit& hit, int depth) const;
   Color get_pixel(const Camera& camera, const Color& luminance) const;
 
 public:
