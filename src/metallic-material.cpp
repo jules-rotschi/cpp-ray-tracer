@@ -1,6 +1,7 @@
 #include "metallic-material.h"
 #include "ray.h"
 #include "object.h"
+#include "hit.h"
 
 Metallic::Metallic(Color albedo, double fuzziness) : Material(albedo, fuzziness) {}
 

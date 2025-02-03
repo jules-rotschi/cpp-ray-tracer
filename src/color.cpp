@@ -42,3 +42,8 @@ Color& Color::operator+=(const Color& other_color) {
   *this = *this + other_color;
   return *this;
 }
+
+Color& Color::operator/=(double k) {
+  *this = *this / k;
+  return *this;
+}

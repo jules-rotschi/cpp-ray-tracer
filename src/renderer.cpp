@@ -13,6 +13,7 @@
 #include "utility.h"
 #include "color.h"
 #include "material.h"
+#include "hit.h"
 
 Renderer::Renderer(const Scene& scene)
   : m_scene(&scene) {}
@@ -75,26 +76,16 @@ Hit Renderer::trace_ray(const Ray& ray) const {
 }
 
 Color Renderer::compute_illumination(const Ray& incident_ray, const Hit& hit, int depth) const {
-  Color direct_illumination;
-
-  for (auto& light : m_scene->lights) {
-    Vector3 unit_light_direction = Vector3(hit.point, light->position).make_unit();
-    double light_distance = hit.point.get_distance_from(light->position);
-    
-    direct_illumination +=
-      light->intensity
-      * std::max(dot(hit.unit_normal, unit_light_direction), 0.0)
-      / (light_distance * light_distance);
-  }
-
-  if (depth == 0) return direct_illumination;
+  if (depth == 0) return Color(0, 0, 0);
 
   Ray scattered_ray;
   hit.material->scatter(incident_ray, hit, scattered_ray);
   Hit next_hit = trace_ray(scattered_ray);
 
   if (next_hit.t == -1)
-    return direct_illumination + m_scene->sky_color * pi;
+    return m_scene->sky_color * pi;
+
+  Color direct_illumination = next_hit.material->emitted_color;
   
   return direct_illumination
     + next_hit.material->albedo

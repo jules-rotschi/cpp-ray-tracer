@@ -12,14 +12,17 @@
 #include "light.h"
 #include "diffuse-material.h"
 #include "metallic-material.h"
+#include "emissive-material.h"
 
 int main(int argc, char* argv[]) {
 
   Diffuse grey(Color(0.5, 0.5, 0.5));
   Metallic metallic(Color(0.9, 0.9, 0.9), 0);
   Metallic fuzzy_metallic(Color(0.9, 0.9, 0.9), 0.1);
+  Emissive white_light(Color(0.1, 0.1, 0.1), Color(1, 1, 1), 30000);
+  Emissive warm_light(Color(0.1, 0.1, 0.1), Color(1, 0.5, 0.25), 50000);
   
-  Scene scene(Color(30, 40, 60));
+  Scene scene(Color(50, 70, 100));
 
   const Sphere ground(Point3(0, -100.5, -5), 100, grey);
   scene.add(ground);
@@ -33,18 +36,18 @@ int main(int argc, char* argv[]) {
   const Sphere right(Point3(1.5, 0, -5), 0.5, fuzzy_metallic);
   scene.add(right);
 
-  const Light light(Point3(-6, 1, -1), Color(5000, 5000, 5000));
+  const Sphere light(Point3(-6, 1, -1), 0.5, white_light);
   scene.add(light);
 
-  const Light back_light(Point3(8, 1, -8), Color(8000, 4000, 2000));
+  const Sphere back_light(Point3(8, 1, -8), 0.5, warm_light);
   scene.add(back_light);
 
-  const int image_width = 1920;
+  const int image_width = 1280;
   const double image_aspect_ratio = 16.0/9.0;
   const double viewport_height = 0.024;
   const int sensivity = 800;
   const double focal_length = 0.05;
-  const double aperture = 4;
+  const double aperture = 5.6;
   const double shutter_speed = 1.0/50;
   const Point3 camera_position = { 0, 0, 0 };
 
@@ -53,7 +56,7 @@ int main(int argc, char* argv[]) {
 
   const Camera camera(camera_position, sensor, lens, shutter_speed);
 
-  const int samples_per_pixel = 300;
+  const int samples_per_pixel = 3000;
   const int depth = 10;
 
   const Renderer renderer(scene);

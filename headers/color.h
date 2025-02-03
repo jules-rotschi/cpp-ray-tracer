@@ -8,6 +8,7 @@ public:
   Color(double red, double green, double blue);
   Color& normalize_components(double max_value);
   Color& operator+=(const Color& other_color);
+  Color& operator/=(double k);
 };
 
 Color operator*(const Color& color, double k);

@@ -6,27 +6,16 @@
 class Ray;
 class Object;
 class Material;
+class Hit;
 
-#include "vector3.h"
-#include "point3.h"
 #include "interval.h"
 #include "color.h"
-
-class Hit {
-  public:
-    double t;
-    Point3 point;
-    Vector3 unit_normal;
-    bool front_face;
-    const Material* material;
-
-    Hit();
-    void set_face_normal(const Ray& ray, const Vector3& outward_normal);
-  };
 
 class Object {
 public:
   Object(const Material* material);
+
+  virtual double get_face_area() = 0;
 
   virtual bool hit(
     const Ray& ray,
