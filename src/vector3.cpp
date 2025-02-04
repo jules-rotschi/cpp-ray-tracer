@@ -36,18 +36,34 @@ Vector3 Vector3::reflect(const Vector3& normal) const {
 }
 
 Vector3 Vector3::random() {
-  return Vector3(utility::random(), utility::random(), utility::random());
+  return { utility::random(), utility::random(), utility::random() };
 }
 
 Vector3 Vector3::random(double min, double max) {
-  return Vector3(utility::random(min, max), utility::random(min, max), utility::random(min, max));
+  return { utility::random(min, max), utility::random(min, max), utility::random(min, max) };
 }
 
-double dot(const Vector3& vector1, const Vector3& vector2) {
-  return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
+double dot(const Vector3& a, const Vector3& b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-Vector3 random_unit_vector() {
+Vector3 cross(const Vector3& a, const Vector3& b) {
+  return {
+    a.y * b.z - a.z * b.y,
+    a.z * b.x - a.x * b.z,
+    a.x * b.y - a.y * b.x
+  };
+}
+
+Vector3 random_unit_vector_in_disk() {
+  while (true) {
+    Vector3 random_vector = Vector3(utility::random(-1, 1), utility::random(-1, 1), 0);
+    if (random_vector.get_squared_length() < 1)
+      return random_vector;
+  }
+}
+
+Vector3 random_unit_vector_in_sphere() {
   while (true) {
     Vector3 random_vector = Vector3::random(-1, 1);
     if (random_vector.get_squared_length() < 1 && random_vector.get_squared_length() > 1e-160) {
@@ -57,7 +73,7 @@ Vector3 random_unit_vector() {
 }
 
 Vector3 random_unit_vector_on_hemisphere(const Vector3& hemisphere_direction) {
-  Vector3 unit_vector = random_unit_vector();
+  Vector3 unit_vector = random_unit_vector_in_sphere();
   if (dot(unit_vector, hemisphere_direction) > 0)
     return unit_vector;
   return -unit_vector;

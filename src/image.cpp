@@ -11,11 +11,15 @@ Image::Image(int width, int height)
 }
 
 PixelColor Image::get_pixel(int row, int column) const {
-  return m_data[row * width + column];
+  int safe_row = row > height - 1 ? height - 1 : row;
+  int safe_column = column > width - 1 ? width - 1 : column;
+  return m_data[safe_row * width + safe_column];
 }
 
 void Image::set_pixel(int row, int column, const PixelColor& value) {
-  m_data[row * width + column] = value;
+  int safe_row = row > height - 1 ? height - 1 : row;
+  int safe_column = column > width - 1 ? width - 1 : column;
+  m_data[safe_row * width + safe_column] = value;
 }
 
 Image::~Image() {

@@ -14,6 +14,10 @@ Point3 operator+(const Point3& point, const Vector3& vector) {
   return Point3(point.x + vector.x, point.y + vector.y, point.z + vector.z);
 }
 
+Point3 operator-(const Point3& point, const Vector3& vector) {
+  return point + (-vector);
+}
+
 Vector3 operator-(const Point3& point1, const Point3& point2) {
   return Vector3(point2, point1);
 }

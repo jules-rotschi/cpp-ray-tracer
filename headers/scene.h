@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "object.h"
-#include "light.h"
 
 class Scene {
 public:

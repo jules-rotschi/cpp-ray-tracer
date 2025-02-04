@@ -12,6 +12,7 @@ public:
 };
 
 Point3 operator+(const Point3& point, Vector3 const& vector);
+Point3 operator-(const Point3& point, Vector3 const& vector);
 
 Vector3 operator-(const Point3& point1, const Point3& point2);
 

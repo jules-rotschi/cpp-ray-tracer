@@ -40,7 +40,7 @@ PixelColor Renderer::compute_pixel(const Camera& camera, int row, int column, in
   Color integral_luminance;
 
   for (int i = 0; i < samples_count; i++) {
-    Ray ray(camera.position, camera.get_pixel_position(row, column));
+    Ray ray(camera.get_ray_origin(), camera.get_virtual_pixel_position(row, column));
 
     Hit hit_payload = trace_ray(ray);
     Color luminance;
@@ -76,18 +76,20 @@ Hit Renderer::trace_ray(const Ray& ray) const {
 }
 
 Color Renderer::compute_illumination(const Ray& incident_ray, const Hit& hit, int depth) const {
-  if (depth == 0) return Color(0, 0, 0);
+  Color own_light = hit.material->emitted_color * pi;
+  
+  if (depth == 0) return own_light;
 
   Ray scattered_ray;
   hit.material->scatter(incident_ray, hit, scattered_ray);
   Hit next_hit = trace_ray(scattered_ray);
 
   if (next_hit.t == -1)
-    return m_scene->sky_color * pi;
+    return own_light + m_scene->sky_color * pi;
 
   Color direct_illumination = next_hit.material->emitted_color;
   
-  return direct_illumination
+  return own_light + direct_illumination
     + next_hit.material->albedo
     * compute_illumination(scattered_ray, next_hit, depth - 1);
 }

@@ -20,9 +20,11 @@ public:
   static Vector3 random(double min, double max);
 };
 
-double dot(const Vector3& vector1, const Vector3& vector2);
+double dot(const Vector3& a, const Vector3& b);
+Vector3 cross(const Vector3& a, const Vector3& b);
 
-Vector3 random_unit_vector();
+Vector3 random_unit_vector_in_disk();
+Vector3 random_unit_vector_in_sphere();
 Vector3 random_unit_vector_on_hemisphere(const Vector3& hemisphere_direction);
 
 Vector3 operator+(const Vector3& vector1, const Vector3& vector2);
