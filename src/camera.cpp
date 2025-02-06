@@ -41,12 +41,6 @@ void Camera::add_nd_filter(double density) {
   m_neutral_density_value += density;
 }
 
-void Camera::remove_nd_filter(double density) {
-  if (density <= m_neutral_density_value) {
-    m_neutral_density_value -= density;
-  }
-}
-
 double Camera::get_aspect_ratio() const {
   return sensor.definition.aspect_ratio;
 }

@@ -10,6 +10,8 @@ private:
   Vector3 m_direction;
 
 public:
+  double refractive_index;
+  
   Ray();
   Ray(const Point3& origin, const Vector3& direction);
   Ray(const Point3& origin, const Point3& direction);

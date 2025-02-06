@@ -27,7 +27,7 @@ double Sphere::get_face_area() {
   return pi * m_radius * m_radius;
 }
 
-bool Sphere::hit(const Ray& ray, Interval t_interval, Hit& hit_payload) const {
+bool Sphere:: hit(const Ray& ray, Interval t_interval, Hit& hit_payload) const {
   Vector3 ray_direction = ray.get_direction();
   Vector3 sphere_direction(ray.get_origin(), m_center);
   

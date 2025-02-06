@@ -35,4 +35,11 @@ public:
   Emissive(const Color& albedo, const Color& emitted_color, double light_intensity);
 };
 
+class Dielectric : public Material {
+public:
+  double refractive_index;
+  Dielectric(double refractive_index);
+  bool scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const override;
+};
+
 #endif

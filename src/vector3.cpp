@@ -3,6 +3,7 @@
 #include "vector3.h"
 #include "point3.h"
 #include "utility.h"
+#include "ray.h"
 
 Vector3::Vector3() : x(0), y(0), z(0) {}
 
@@ -33,6 +34,12 @@ Vector3 Vector3::make_unit() const {
 
 Vector3 Vector3::reflect(const Vector3& normal) const {
   return *this - 2 * dot(*this, normal) * normal;
+}
+
+Vector3 Vector3::refract(const Vector3& unit_normal, double refractive_indices_ratio) const {
+  Vector3 orthogonal_component = refractive_indices_ratio * (*this + dot(*this, -unit_normal) * unit_normal);
+  Vector3 colinear_componant = std::sqrt(1 - orthogonal_component.get_squared_length()) * -unit_normal;
+  return orthogonal_component + colinear_componant;
 }
 
 Vector3 Vector3::random() {

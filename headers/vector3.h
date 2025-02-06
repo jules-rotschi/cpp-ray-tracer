@@ -2,6 +2,7 @@
 #define VECTOR3_H
 
 class Point3;
+class Ray;
 
 class Vector3 {
 public:
@@ -16,6 +17,7 @@ public:
   double get_squared_length() const;
   Vector3 make_unit() const;
   Vector3 reflect(const Vector3& normal) const;
+  Vector3 refract(const Vector3& unit_normal, double refractive_indices_ratio) const;
   static Vector3 random();
   static Vector3 random(double min, double max);
 };

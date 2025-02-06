@@ -46,7 +46,6 @@ public:
   );
 
   void add_nd_filter(double density);
-  void remove_nd_filter(double density);
   double get_aspect_ratio() const;
   Point3 get_ray_origin() const;
   Point3 get_virtual_pixel_position(int row, int column) const;

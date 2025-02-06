@@ -66,7 +66,7 @@ Hit Renderer::trace_ray(const Ray& ray) const {
   Hit hit_payload;
   double closest = infinity;
 
-  for (auto& object : m_scene->objects) {
+  for (const std::unique_ptr<const Object>& object : m_scene->objects) {
     if (object->hit(ray, Interval(ray_tmin, closest), hit_payload)) {
       closest = hit_payload.t;
     }
