@@ -38,8 +38,8 @@ Vector3 Vector3::reflect(const Vector3& normal) const {
 
 Vector3 Vector3::refract(const Vector3& unit_normal, double refractive_indices_ratio) const {
   Vector3 orthogonal_component = refractive_indices_ratio * (*this + dot(*this, -unit_normal) * unit_normal);
-  Vector3 colinear_componant = std::sqrt(1 - orthogonal_component.get_squared_length()) * -unit_normal;
-  return orthogonal_component + colinear_componant;
+  Vector3 collinear_component = std::sqrt(1 - orthogonal_component.get_squared_length()) * -unit_normal;
+  return orthogonal_component + collinear_component;
 }
 
 Vector3 Vector3::random() {

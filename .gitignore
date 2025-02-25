@@ -1,3 +1,13 @@
+.vs
 .vscode
 *.exe
+*.vcxproj
+*.vcxproj.*
 image.ppm
+*.sln
+CMakeFiles
+CMakeCache.txt
+*.cmake
+*.dir
+Debug
+x64

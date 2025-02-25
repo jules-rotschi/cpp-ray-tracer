@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 
 #include "renderer.h"
 #include "scene.h"
@@ -11,9 +12,11 @@
 #include "ray.h"
 #include "material.h"
 
-#define PREVIEW false
+#define PREVIEW true
 
 int main(int argc, char* argv[]) {
+
+  bool preview = PREVIEW;
 
   Diffuse grey(Color(0.5, 0.5, 0.5));
   Diffuse red(Color(0.8, 0.4, 0.4));
@@ -49,7 +52,7 @@ int main(int argc, char* argv[]) {
   const Sphere glass_sphere(Point3(0, 0, -5), 0.5, glass);
   scene.add(glass_sphere);
 
-  const int image_width = PREVIEW ? 640 : 1280;
+  const int image_width = preview ? 640 : 1280;
   const double image_aspect_ratio = 16.0/9.0;
   const double viewport_height = 0.024;
   const int sensivity = 800;
@@ -67,8 +70,8 @@ int main(int argc, char* argv[]) {
   Camera camera(camera_position, camera_direction, camera_vup, sensor, lens, shutter_speed);
   camera.add_nd_filter(0.9);
 
-  const int samples_per_pixel = PREVIEW ? 25 : 10000;
-  const int depth = PREVIEW ? 10 : 50;
+  const int samples_per_pixel = preview ? 25 : 10000;
+  const int depth = preview ? 10 : 50;
 
   const Renderer renderer(scene);
   const std::unique_ptr<Image> rendered_image = renderer.render(camera, samples_per_pixel, depth);
