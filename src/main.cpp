@@ -22,19 +22,19 @@ int main(int argc, char* argv[]) {
   Opaque red(Color(0.8, 0.4, 0.4), 0, 0);
 
   // Metals
-  Opaque metal(Color(0.9, 0.9, 0.9), 1, 0.01);
-  Opaque fuzzy_metal(Color(0.9, 0.9, 0.9), 1, 0.1);
+  Opaque metal(Color(0.9, 0.9, 0.9), 0.01, 1);
+  Opaque fuzzy_metal(Color(0.9, 0.9, 0.9), 0.1, 1);
   
   // Clears
-  Clear glass(1.52);
+  Clear glass(1.52, Color(0.8, 1, 0.8), 0.1);
   
   // Lights
   Emissive white_light(Color(0.1, 0.1, 0.1), Color(1, 1, 1), 20000);
   Emissive warm_light(Color(0.1, 0.1, 0.1), Color(1, 0.5, 0.25), 20000);
   
   // Shiny
-  Opaque ceramic(Color(0.9, 0.9, 0.9), 0.5, 0.01);
-  Opaque tiling(Color(0.4, 0.5, 0.5), 0.2, 0.3);
+  Opaque ceramic(Color(0.9, 0.9, 0.9), 0.01, 0.5);
+  Opaque tiling(Color(0.4, 0.5, 0.5), 0.3, 0.2);
   
   Scene scene(Color(10, 20, 40));
 

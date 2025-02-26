@@ -7,14 +7,14 @@
 #include "hit.h"
 #include "utility.h"
 
-Material::Material(const Color& albedo, const Color& emitted_color)
-  : albedo(albedo), emitted_color(emitted_color) {}
+Material::Material(const Color& albedo, double roughness, const Color& emitted_color)
+  : albedo(albedo), roughness(roughness), emitted_color(emitted_color) {}
 
-Opaque::Opaque(const Color& albedo, double shine, double roughness)
-  : Material(albedo), shine(shine), roughness(roughness) {}
+Opaque::Opaque(const Color& albedo, double roughness, double shine)
+  : Material(albedo, roughness), shine(shine) {}
 
 Opaque::Opaque(const Color& albedo, const Color& emitted_color)
-  : Material(albedo, emitted_color) {}
+  : Material(albedo, 1, emitted_color) {}
 
 bool Opaque::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const {
   Vector3 scattered_direction;
@@ -38,8 +38,8 @@ bool Opaque::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray
 Emissive::Emissive(const Color& albedo, const Color& emitted_color, double lightness)
   : Opaque(albedo, emitted_color * lightness) {}
 
-Clear::Clear(double refractive_index)
-    : refractive_index(refractive_index), Material(Color(1, 1, 1), Color(0, 0, 0)) {
+Clear::Clear(double refractive_index, const Color& albedo, double roughness)
+  : refractive_index(refractive_index), Material(albedo, roughness) {
 }
 
 bool Clear::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const {
@@ -63,9 +63,11 @@ bool Clear::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray)
   Vector3 scattered_direction;
 
   if (ray_only_reflects || utility::random() < reflexion_probability) {
-    scattered_direction = incident_unit_vector.reflect(hit.unit_normal);
+    Vector3 reflected_direction = incident_unit_vector.reflect(hit.unit_normal);
+    scattered_direction = reflected_direction + roughness * random_unit_vector_in_sphere();
   } else {
-    scattered_direction = incident_unit_vector.refract(hit.unit_normal, refractive_indices_ratio);
+    Vector3 refracted_direction = incident_unit_vector.refract(hit.unit_normal, refractive_indices_ratio);
+    scattered_direction = refracted_direction + roughness * random_unit_vector_in_sphere();
   }
   
   scattered_ray = { hit.point, scattered_direction };
