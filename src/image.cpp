@@ -6,7 +6,7 @@ std::ostream& operator<<(std::ostream& output, PixelColor pixel) {
 }
 
 Image::Image(int width, int height)
-  : width(width), height(height) {
+  : width(width), height(height), aspect_ratio(width / height) {
   m_data = new PixelColor[width * height];
 }
 

@@ -1,4 +1,4 @@
-#include <fstream>
+ #include <fstream>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -11,56 +11,63 @@
 #include "camera.h"
 #include "ray.h"
 #include "material.h"
+#include "plane.h"
 
-#define PREVIEW true
+constexpr bool PREVIEW = false;
 
 int main(int argc, char* argv[]) {
 
-  bool preview = PREVIEW;
+	// Diffuse colors
+  Opaque grey(Color(0.5, 0.5, 0.5), 0, 0);
+  Opaque red(Color(0.8, 0.4, 0.4), 0, 0);
 
-  Diffuse grey(Color(0.5, 0.5, 0.5));
-  Diffuse red(Color(0.8, 0.4, 0.4));
-  Metallic metallic(Color(0.9, 0.9, 0.9), 0.01);
-  Metallic fuzzy_metallic(Color(0.9, 0.9, 0.9), 0.1);
-  Emissive white_light(Color(0.1, 0.1, 0.1), Color(1, 1, 1), 30000);
-  Emissive warm_light(Color(0.1, 0.1, 0.1), Color(1, 0.5, 0.25), 10000);
-  Dielectric glass(1.52);
+  // Metals
+  Opaque metal(Color(0.9, 0.9, 0.9), 1, 0.01);
+  Opaque fuzzy_metal(Color(0.9, 0.9, 0.9), 1, 0.1);
   
-  Scene scene(Color(100, 140, 200));
+  // Clears
+  Clear glass(1.52);
+  
+  // Lights
+  Emissive white_light(Color(0.1, 0.1, 0.1), Color(1, 1, 1), 20000);
+  Emissive warm_light(Color(0.1, 0.1, 0.1), Color(1, 0.5, 0.25), 20000);
+  
+  // Shiny
+  Opaque ceramic(Color(0.9, 0.9, 0.9), 0.5, 0.01);
+  Opaque tiling(Color(0.4, 0.5, 0.5), 0.2, 0.3);
+  
+  Scene scene(Color(10, 20, 40));
 
-  const Sphere ground(Point3(0, -100.5, -5), 100, grey);
-  scene.add(ground);
+  Sphere tile(Point3(0, -100.5, 0), 100, tiling);
+  scene.add(tile);
 
-  const Sphere center(Point3(1, 0, -8), 0.5, grey);
-  scene.add(center);
+  Sphere red_sphere(Point3(-1, 0, -2), 0.5, red);
+  scene.add(red_sphere);
 
-  const Sphere back(Point3(-1, 0, -8), 0.5, red);
-  scene.add(back);
+  Sphere ceramic_sphere(Point3(-1.5, 0, 0), 0.5, ceramic);
+  scene.add(ceramic_sphere);
 
-  const Sphere left(Point3(-1.5, 0, -5), 0.5, metallic);
-  scene.add(left);
+  Sphere metal_sphere(Point3(1.5, 0, -0.5), 0.5, fuzzy_metal);
+  scene.add(metal_sphere);
 
-  const Sphere right(Point3(1.5, 0, -5), 0.5, fuzzy_metallic);
-  scene.add(right);
-
-  const Sphere light(Point3(-4, 1, -1), 0.5, white_light);
-  scene.add(light);
-
-  const Sphere back_light(Point3(2, 1, -8), 0.5, warm_light);
-  scene.add(back_light);
-
-  const Sphere glass_sphere(Point3(0, 0, -5), 0.5, glass);
+  Sphere glass_sphere(Point3(0, 0, 0), 0.5, glass);
   scene.add(glass_sphere);
 
-  const int image_width = preview ? 640 : 1280;
+  Sphere key_light(Point3(-3, 2, 2), 1, white_light);
+  scene.add(key_light);
+
+  Sphere back_light(Point3(3, 150, -150), 50, warm_light);
+  scene.add(back_light);
+
+  const int image_width = PREVIEW ? 640 : 1280;
   const double image_aspect_ratio = 16.0/9.0;
   const double viewport_height = 0.024;
   const int sensivity = 800;
   const double focal_length = 0.07;
-  const double aperture = 2.8;
+  const double aperture = 1.4;
   const double focus_distance = 8;
   const double shutter_speed = 1.0/50;
-  const Point3 camera_position = { 0, 2, 3 };
+  const Point3 camera_position = { 0, 2, 8 };
   const Vector3 camera_direction = { 0, -1, -5 };
   const Vector3 camera_vup = { 0, 1, 0 };
 
@@ -68,10 +75,10 @@ int main(int argc, char* argv[]) {
   const Lens lens(focal_length, aperture, focus_distance);
 
   Camera camera(camera_position, camera_direction, camera_vup, sensor, lens, shutter_speed);
-  camera.add_nd_filter(0.9);
+  camera.add_nd_filter(1.8);
 
-  const int samples_per_pixel = preview ? 25 : 10000;
-  const int depth = preview ? 10 : 50;
+  const int samples_per_pixel = PREVIEW ? 100 : 10000;
+  const int depth = PREVIEW ? 10 : 50;
 
   const Renderer renderer(scene);
   const std::unique_ptr<Image> rendered_image = renderer.render(camera, samples_per_pixel, depth);

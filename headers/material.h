@@ -14,31 +14,26 @@ public:
   virtual bool scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const = 0;
 };
 
-class Diffuse : public Material {
+class Opaque : public Material {
 public:
-  Diffuse(const Color& albedo);
-  Diffuse(const Color& albedo, const Color& emitted_color);
-  bool scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const override;
-};
-
-class Metallic : public Material {
-public:
-  Metallic(Color albedo, double roughness);
+  Opaque(const Color& albedo, double shine, double roughness);
+  Opaque(const Color& albedo, const Color& emitted_color);
   bool scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const override;
 
 private:
-  double roughness;
+  double shine = 0;
+  double roughness = 0;
 };
 
-class Emissive : public Diffuse {
+class Emissive : public Opaque {
 public:
-  Emissive(const Color& albedo, const Color& emitted_color, double light_intensity);
+  Emissive(const Color& albedo, const Color& emitted_color, double lightness);
 };
 
-class Dielectric : public Material {
+class Clear : public Material {
 public:
   double refractive_index;
-  Dielectric(double refractive_index);
+  Clear(double refractive_index);
   bool scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const override;
 };
 

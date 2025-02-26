@@ -17,9 +17,9 @@ private:
   PixelColor* m_data;
 
 public:
-  int width;
-  int height;
-  double aspect_ratio;
+  int width = 1;
+  int height = 1;
+  double aspect_ratio = 1;
 
   Image() = delete;
   Image(int width, int height);

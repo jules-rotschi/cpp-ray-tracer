@@ -10,10 +10,8 @@
 #include "utility.h"
 #include "material.h"
 
-Sphere::Sphere(const Point3& position, double radius, Material& material)
-  : m_center(position), m_radius(radius), Object(&material) {
-  material.emitted_color /= get_face_area();
-}
+Sphere::Sphere(const Point3& position, double radius, const Material& material)
+  : m_center(position), m_radius(radius), Object(&material) {}
 
 const Point3& Sphere::get_origin() const {
   return m_center;
@@ -21,10 +19,6 @@ const Point3& Sphere::get_origin() const {
 
 std::unique_ptr<const Object> Sphere::get_unique_ptr() const {
   return std::make_unique<const Sphere>(*this);
-}
-
-double Sphere::get_face_area() {
-  return pi * m_radius * m_radius;
 }
 
 bool Sphere:: hit(const Ray& ray, Interval t_interval, Hit& hit_payload) const {

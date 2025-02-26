@@ -7,6 +7,7 @@ class Image;
 
 class PpmEncoder {
 public:
+  PpmEncoder() = default;
   void encode(const Image& image, std::ofstream& file) const;
 };
 

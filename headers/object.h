@@ -15,12 +15,10 @@ class Object {
 public:
   Object(const Material* material);
 
-  virtual double get_face_area() = 0;
-
   virtual bool hit(
     const Ray& ray,
     Interval t_interval,
-    Hit& hit
+    Hit& hit_payload
   ) const = 0;
 
   virtual std::unique_ptr<const Object> get_unique_ptr() const = 0;

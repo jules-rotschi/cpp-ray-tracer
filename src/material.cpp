@@ -10,36 +10,39 @@
 Material::Material(const Color& albedo, const Color& emitted_color)
   : albedo(albedo), emitted_color(emitted_color) {}
 
-Diffuse::Diffuse(const Color& albedo) : Material(albedo) {}
+Opaque::Opaque(const Color& albedo, double shine, double roughness)
+  : Material(albedo), shine(shine), roughness(roughness) {}
 
-Diffuse::Diffuse(const Color& albedo, const Color& emitted_color)
+Opaque::Opaque(const Color& albedo, const Color& emitted_color)
   : Material(albedo, emitted_color) {}
 
-bool Diffuse::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const {
-  Vector3 scattered_direction = hit.unit_normal + random_unit_vector_in_sphere();
+bool Opaque::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const {
+  Vector3 scattered_direction;
+
+  if (shine > 0 && (shine >= 1 || utility::random() < shine)) {
+    Vector3 reflected_direction = incident_ray.get_direction().make_unit().reflect(hit.unit_normal);
+    scattered_direction = reflected_direction + roughness * random_unit_vector_in_sphere();
+  }
+  else {
+    scattered_direction = hit.unit_normal + random_unit_vector_in_sphere();
+  }
+  
   if (scattered_direction.is_nearly_null()) {
     scattered_direction = hit.unit_normal;
   }
+
   scattered_ray = Ray(hit.point, scattered_direction);
   return true;
 }
 
-Metallic::Metallic(Color albedo, double roughness) : Material(albedo), roughness(roughness) {}
+Emissive::Emissive(const Color& albedo, const Color& emitted_color, double lightness)
+  : Opaque(albedo, emitted_color * lightness) {}
 
-bool Metallic::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const {
-  Vector3 reflected_direction = incident_ray.get_direction().make_unit().reflect(hit.unit_normal);
-  Vector3 fuzzy_direction = reflected_direction.make_unit() + roughness * random_unit_vector_in_sphere();
-  scattered_ray = Ray(hit.point, fuzzy_direction);
-  return true;
+Clear::Clear(double refractive_index)
+    : refractive_index(refractive_index), Material(Color(1, 1, 1), Color(0, 0, 0)) {
 }
 
-Emissive::Emissive(const Color& albedo, const Color& emitted_color, double light_intensity)
-  : Diffuse(albedo, emitted_color * light_intensity) {}
-
-Dielectric::Dielectric(double refractive_index)
-  : refractive_index(refractive_index), Material(Color(1, 1, 1), Color(0, 0, 0)) {}
-
-bool Dielectric::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const {
+bool Clear::scatter(const Ray& incident_ray, const Hit& hit, Ray& scattered_ray) const {
   double first_medium_index = incident_ray.refractive_index;
   double second_medium_index = hit.front_face ? refractive_index : 1;
   double refractive_indices_ratio = first_medium_index / second_medium_index;

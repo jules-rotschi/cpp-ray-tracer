@@ -9,13 +9,12 @@ class Material;
 
 class Hit {
 public:
-  double t;
+  double t = -1;
   Point3 point;
   Vector3 unit_normal;
-  bool front_face;
-  const Material* material;
+  bool front_face = false;
+  const Material* material = nullptr;
 
-  Hit();
   void set_face_normal(const Ray& ray, const Vector3& outward_normal);
 };
 
